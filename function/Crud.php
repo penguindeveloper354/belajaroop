@@ -1,5 +1,8 @@
 <?php
-require_once('Config.php');
+define('document_root', $_SERVER['DOCUMENT_ROOT']."/oop");
+
+
+include(document_root."/config/Config.php");
 class Crud{
 	protected $nama,$alamat,$id,$koneksi;
 	function __construct(){
@@ -15,10 +18,10 @@ class Crud{
 		$statement->bindParam(':alamat',$alamat);
 		$act = $statement->execute();
 		if($act === TRUE){
-			echo "data berhasil di input";
+			return $act;
 		}
 		else{
-			echo "data gagal di input";
+			return FALSE;
 		}
 	}
 
@@ -55,10 +58,14 @@ class Crud{
 	function selectAll(){
 		$statement 	= $this->koneksi->prepare("SELECT * FROM orang");
 		$act 		= $statement->execute();
-		while($row = $act->fetch(PDO::FETCH_ASSOC)){
-			$data[] = $row;
-		}
-		return $data;
+		return $statement->fetchAll();
+	}
+
+	function selectWhere($id){
+		$statement 	= $this->koneksi->prepare("SELECT * FROM orang WHERE id=:id");
+		$statement->bindParam(':id',$id);
+		$act 		= $statement->execute();
+		return $statement->fetchAll();
 	}
 
 }
